@@ -10,8 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>simulator</module>
-        <module>core</module>
     </modules>
 
     <properties>
