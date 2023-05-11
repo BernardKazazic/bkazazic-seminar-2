@@ -1,0 +1,12 @@
+server:
+  port: 8001
+
+inverter:
+  address:
+    - "192.168.66.127"
+    - "192.168.66.128"
+    - "192.168.66.129"
+    - "192.168.66.130"
+  port: 502
+  startRegister: 40092
+  registerCount: 2

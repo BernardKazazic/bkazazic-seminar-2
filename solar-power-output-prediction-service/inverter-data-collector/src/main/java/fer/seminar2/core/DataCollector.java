@@ -1,5 +1,7 @@
-package core;
+package fer.seminar2.core;
 
+import fer.seminar2.configuration.InverterConfiguration;
+import lombok.NonNull;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.ReadMultipleRegistersRequest;
@@ -13,21 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataCollector {
-    private static final List<String> ADDRESSES = List.of("192.168.66.127", "192.168.66.128", "192.168.66.129", "192.168.66.130");
-    private static final int PORT = 502;
-    private static final int START_REGISTER_ADDRESS = 40092;
-    private static final int REGISTER_COUNT = 2;
-
+    @NonNull
+    private final InverterConfiguration configuration;
+    @NonNull
     private final List<TCPMasterConnection> connections;
 
-    public DataCollector() {
+    public DataCollector(InverterConfiguration configuration) {
+        this.configuration = configuration;
         this.connections = new ArrayList<>();
         addShutdownHook();
 
-        for (String address : ADDRESSES) {
+        for (String address : configuration.getAddress()) {
             try {
                 TCPMasterConnection connection = new TCPMasterConnection(InetAddress.getByName(address));
-                connection.setPort(PORT);
+                connection.setPort(configuration.getPort());
                 connection.connect();
                 connection.setTimeout(1000);
                 connections.add(connection);
@@ -45,7 +46,7 @@ public class DataCollector {
             transaction.setRetries(0);
             transaction.setReconnecting(false);
 
-            ReadMultipleRegistersRequest request = new ReadMultipleRegistersRequest(START_REGISTER_ADDRESS, REGISTER_COUNT);
+            ReadMultipleRegistersRequest request = new ReadMultipleRegistersRequest(configuration.getStartRegister(), configuration.getRegisterCount());
             request.setUnitID(1);
             transaction.setRequest(request);
             transaction.execute();
@@ -54,7 +55,7 @@ public class DataCollector {
 
             Register[] registers = response.getRegisters();
 
-            float ACPower = parseSwFloat(registers[0], registers[1]);
+            float ACPower = parseFloat(registers[0], registers[1]);
 
             ACPowers.add(ACPower);
         }
@@ -69,6 +70,15 @@ public class DataCollector {
         int combinedValue = (mostSignificantByte << 16) | leastSignificantByte;
 
         return ByteBuffer.allocate(4).putInt(combinedValue).flip().getFloat();
+    }
+
+    private float parseFloat(Register register0, Register register1) {
+        int mostSignificantByte = register0.toUnsignedShort();
+        int leastSignificantByte = register1.toUnsignedShort();
+
+        int combinedValue = (leastSignificantByte << 16) | mostSignificantByte;
+
+        return Float.intBitsToFloat(combinedValue);
     }
 
     private void closeConnections() {
