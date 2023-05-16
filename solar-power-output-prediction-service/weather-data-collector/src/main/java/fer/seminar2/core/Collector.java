@@ -28,7 +28,13 @@ public class Collector {
     @NonNull
     private DateTimeFormatter dateTimeFormatter;
 
-    public Forecast fetchWeatherData() {
+    public List<HourlyTemperature> getWeatherPredictionValuesForNext24h() {
+        Forecast forecast24h = fetchWeatherData();
+        TimePeriod timePeriod = calculateTimePeriod();
+        return mapAndFilterHourlyForecast(forecast24h.forecastDays(), timePeriod);
+    }
+
+    private Forecast fetchWeatherData() {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(URL)
                 .queryParam("key", apiKey)
                 .queryParam("q", CITY)
@@ -39,14 +45,14 @@ public class Collector {
         return response.getBody();
     }
 
-    public List<HourlyTemperature> getWeatherPredictionValuesForNext24h() {
-        Forecast forecast24h = fetchWeatherData();
-        TimePeriod timePeriod = calculateTimePeriod();
-        List<HourlyTemperature> hourlyTemperatures = mapAndFilterHourlyForecast(forecast24h.forecastDays(), timePeriod);
-        return hourlyTemperatures;
+    private TimePeriod calculateTimePeriod() {
+        LocalDateTime startTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        startTime.format(dateTimeFormatter);
+        LocalDateTime endTime = startTime.plusHours(24);
+        return new TimePeriod(startTime, endTime);
     }
 
-    public List<HourlyTemperature> mapAndFilterHourlyForecast(List<ForecastDay> forecastDays, TimePeriod timePeriod) {
+    private List<HourlyTemperature> mapAndFilterHourlyForecast(List<ForecastDay> forecastDays, TimePeriod timePeriod) {
         return forecastDays.stream()
                 .flatMap(forecastDay -> forecastDay.hourlyForecast().stream())
                 .map(hourlyForecast -> new HourlyTemperature(LocalDateTime.parse(hourlyForecast.time(), dateTimeFormatter), hourlyForecast.tempC()))
@@ -54,13 +60,6 @@ public class Collector {
                         (hourlyTemperature.dateTime().isEqual(timePeriod.startTime()) || hourlyTemperature.dateTime().isAfter(timePeriod.startTime())) &&
                                 (hourlyTemperature.dateTime().isEqual(timePeriod.endTime()) || hourlyTemperature.dateTime().isBefore(timePeriod.endTime())))
                 .collect(Collectors.toList());
-    }
-
-    public TimePeriod calculateTimePeriod() {
-        LocalDateTime startTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-        startTime.format(dateTimeFormatter);
-        LocalDateTime endTime = startTime.plusHours(24);
-        return new TimePeriod(startTime, endTime);
     }
 
 }
