@@ -1,12 +1,15 @@
 package fer.seminar2.core;
 
+import fer.seminar2.core.model.Forecast;
 import fer.seminar2.core.model.HourlyTemperature;
 import fer.seminar2.core.model.TimePeriod;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,9 +27,15 @@ public class Collector {
     @NonNull
     private DateTimeFormatter dateTimeFormatter;
 
-    public JSONObject fetchWeatherData() {
+    public Forecast fetchWeatherData() {
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(URL)
+                .queryParam("key", apiKey)
+                .queryParam("q", CITY)
+                .queryParam("days", DAYS);
+
+        ResponseEntity<Forecast> response = restTemplate.getForEntity(uriBuilder.toUriString(), Forecast.class);
         
-        return null;
+        return response.getBody();
     }
 
     public List<HourlyTemperature> getWeatherPredictionValuesForNext24h() {
