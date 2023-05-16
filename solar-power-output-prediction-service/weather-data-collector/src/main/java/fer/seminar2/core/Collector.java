@@ -1,9 +1,6 @@
 package fer.seminar2.core;
 
-import fer.seminar2.core.model.Forecast;
-import fer.seminar2.core.model.ForecastDay;
-import fer.seminar2.core.model.HourlyTemperature;
-import fer.seminar2.core.model.TimePeriod;
+import fer.seminar2.core.model.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +28,7 @@ public class Collector {
     public List<HourlyTemperature> getWeatherPredictionValuesForNext24h() {
         Forecast forecast24h = fetchWeatherData();
         TimePeriod timePeriod = calculateTimePeriod();
-        return mapAndFilterHourlyForecast(forecast24h.forecastDays(), timePeriod);
+        return mapAndFilterHourlyForecast(forecast24h.forecastday(), timePeriod);
     }
 
     private Forecast fetchWeatherData() {
@@ -40,9 +37,9 @@ public class Collector {
                 .queryParam("q", CITY)
                 .queryParam("days", DAYS);
 
-        ResponseEntity<Forecast> response = restTemplate.getForEntity(uriBuilder.toUriString(), Forecast.class);
+        ResponseEntity<WeatherData> response = restTemplate.getForEntity(uriBuilder.toUriString(), WeatherData.class);
 
-        return response.getBody();
+        return response.getBody().forecast();
     }
 
     private TimePeriod calculateTimePeriod() {
@@ -54,8 +51,8 @@ public class Collector {
 
     private List<HourlyTemperature> mapAndFilterHourlyForecast(List<ForecastDay> forecastDays, TimePeriod timePeriod) {
         return forecastDays.stream()
-                .flatMap(forecastDay -> forecastDay.hourlyForecast().stream())
-                .map(hourlyForecast -> new HourlyTemperature(LocalDateTime.parse(hourlyForecast.time(), dateTimeFormatter), hourlyForecast.tempC()))
+                .flatMap(forecastDay -> forecastDay.hour().stream())
+                .map(hourlyForecast -> new HourlyTemperature(LocalDateTime.parse(hourlyForecast.time(), dateTimeFormatter), hourlyForecast.temp_c()))
                 .filter(hourlyTemperature ->
                         (hourlyTemperature.dateTime().isEqual(timePeriod.startTime()) || hourlyTemperature.dateTime().isAfter(timePeriod.startTime())) &&
                                 (hourlyTemperature.dateTime().isEqual(timePeriod.endTime()) || hourlyTemperature.dateTime().isBefore(timePeriod.endTime())))
