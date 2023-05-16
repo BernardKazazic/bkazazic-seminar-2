@@ -1,0 +1,4 @@
+server:
+  port: 8002
+
+weather-api-key: 86e591bd2eb64ee68ce184032231605

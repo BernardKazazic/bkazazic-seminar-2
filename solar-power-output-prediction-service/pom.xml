@@ -18,6 +18,7 @@
     <modules>
         <module>core</module>
         <module>inverter-data-collector</module>
+        <module>weather-data-collector</module>
     </modules>
 
     <properties>
