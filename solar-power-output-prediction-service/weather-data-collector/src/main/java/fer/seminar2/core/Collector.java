@@ -40,7 +40,10 @@ public class Collector {
     }
 
     public List<HourlyTemperature> getWeatherPredictionValuesForNext24h() {
-        return null;
+        Forecast forecast24h = fetchWeatherData();
+        TimePeriod timePeriod = calculateTimePeriod();
+        List<HourlyTemperature> hourlyTemperatures = mapAndFilterHourlyForecast(forecast24h.forecastDays(), timePeriod);
+        return hourlyTemperatures;
     }
 
     public List<HourlyTemperature> mapAndFilterHourlyForecast(List<ForecastDay> forecastDays, TimePeriod timePeriod) {
