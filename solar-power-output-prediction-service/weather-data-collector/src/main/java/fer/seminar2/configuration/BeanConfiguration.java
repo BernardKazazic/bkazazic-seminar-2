@@ -1,5 +1,6 @@
 package fer.seminar2.configuration;
 
+import fer.seminar2.core.Collector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -16,5 +17,10 @@ public class BeanConfiguration {
     @Bean
     public DateTimeFormatter getDateTimeFormatter() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    }
+
+    @Bean
+    public Collector getCollector() {
+        return new Collector(getRestTemplate(), getDateTimeFormatter());
     }
 }
