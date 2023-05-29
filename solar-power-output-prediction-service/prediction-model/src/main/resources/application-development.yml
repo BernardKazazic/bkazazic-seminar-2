@@ -1,0 +1,8 @@
+server:
+  port: 8003
+
+weather-data-collector:
+  url: "http://localhost:8002"
+
+model:
+  path: "C:/Workspace/lstm-model/lstm-model.h5"
