@@ -1,4 +1,4 @@
-package fer.seminar2.configuration;
+package fer.seminar2.infrastructure.configuration;
 
 import lombok.Getter;
 import lombok.NonNull;

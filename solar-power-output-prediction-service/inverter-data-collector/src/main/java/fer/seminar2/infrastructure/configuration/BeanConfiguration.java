@@ -1,6 +1,6 @@
-package fer.seminar2.configuration;
+package fer.seminar2.infrastructure.configuration;
 
-import fer.seminar2.core.DataCollector;
+import fer.seminar2.application.ReadingCollector;
 import fer.seminar2.domain.repository.ReadingRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class BeanConfiguration {
     private DSLContext dslContext;
 
     @Bean
-    public DataCollector getDataCollector() {
-        return new DataCollector(inverterConfiguration);
+    public ReadingCollector getDataCollector() {
+        return new ReadingCollector(inverterConfiguration);
     }
 
     @Bean

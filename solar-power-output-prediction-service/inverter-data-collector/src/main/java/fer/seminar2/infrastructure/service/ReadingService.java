@@ -1,6 +1,6 @@
-package fer.seminar2.api.service;
+package fer.seminar2.infrastructure.service;
 
-import fer.seminar2.core.DataCollector;
+import fer.seminar2.application.ReadingCollector;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.wimpi.modbus.ModbusException;
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RestService {
+public class ReadingService {
     @NonNull
-    private DataCollector dataCollector;
+    private ReadingCollector readingCollector;
 
-    public Float getCurrentPower() {
+    public Float getPowerReading() {
         try {
-            return dataCollector.getCurrentACPower();
+            return readingCollector.getCurrentACPower();
         } catch (ModbusException e) {
             e.printStackTrace();
             return -1.0f;

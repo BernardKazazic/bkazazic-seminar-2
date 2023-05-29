@@ -1,6 +1,6 @@
-package fer.seminar2.core;
+package fer.seminar2.application;
 
-import fer.seminar2.configuration.InverterConfiguration;
+import fer.seminar2.infrastructure.configuration.InverterConfiguration;
 import lombok.NonNull;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
@@ -14,13 +14,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataCollector {
+public class ReadingCollector {
     @NonNull
     private final InverterConfiguration configuration;
     @NonNull
     private final List<TCPMasterConnection> connections;
 
-    public DataCollector(InverterConfiguration configuration) {
+    public ReadingCollector(InverterConfiguration configuration) {
         this.configuration = configuration;
         this.connections = new ArrayList<>();
         addShutdownHook();
