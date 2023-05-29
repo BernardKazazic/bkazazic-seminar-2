@@ -10,3 +10,10 @@ inverter:
   port: 502
   startRegister: 40092
   registerCount: 2
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/solar
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
