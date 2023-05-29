@@ -14,7 +14,7 @@ public class WeatherController {
     @NonNull
     private WeatherService weatherService;
 
-    @GetMapping("/get-hourly-temperatures")
+    @GetMapping("/temperature/hourly")
     public ResponseEntity<HourlyTemperatures24hDto> getHourlyTemperatures() {
         return ResponseEntity.ok().body(weatherService.getHourlyTemperatures());
     }
