@@ -1,6 +1,6 @@
-package fer.seminar2.configuration;
+package fer.seminar2.infrastructure.configuration;
 
-import fer.seminar2.core.Collector;
+import fer.seminar2.application.WeatherDataCollector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +20,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public Collector getCollector() {
-        return new Collector(getRestTemplate(), getDateTimeFormatter());
+    public WeatherDataCollector getCollector() {
+        return new WeatherDataCollector(getRestTemplate(), getDateTimeFormatter());
     }
 }

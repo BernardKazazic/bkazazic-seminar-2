@@ -1,6 +1,6 @@
-package fer.seminar2.core;
+package fer.seminar2.application;
 
-import fer.seminar2.core.model.*;
+import fer.seminar2.interfaces.dto.application.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class Collector {
+public class WeatherDataCollector {
     private static final String CITY = "Zagreb";
     private static final int DAYS = 2;
     private static final String URL = "http://api.weatherapi.com/v1/forecast.json";
